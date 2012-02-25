@@ -1,0 +1,93 @@
+
+/*****************************
+ * Program to sort the elements of an integer array based on their frequency of occurrence in descending order
+ */
+
+
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+
+public class ElementFrequencyArray {
+	
+	Map<Integer, Integer> valueMap;
+	
+	public ElementFrequencyArray(){
+		valueMap=new HashMap<Integer,Integer>();
+	}
+	//method to put values according to their frequency in the map
+	void putValue(int[] array){
+		for (int key: array){
+			if (valueMap.containsKey(key)){
+				valueMap.put(key, valueMap.get(key)+1);
+			}
+			else
+				valueMap.put(key, 1);
+			}
+	}
+	
+	//method to display numbers and their frequencies in descending order.
+	void showMap(){
+		System.out.println("Sorted values according to frequency of occurence in descending order are: "); 
+        for (Map.Entry entry :valueMap.entrySet()) {
+        	System.out.println("Number : " + entry.getKey() 
+       			+ " Frequency : " + entry.getValue());
+        }
+	}
+	
+	//method to put the sorted map into the actual map
+	void orderValues(){
+	        valueMap =  sortByFrequency(valueMap);
+	}
+	
+	//method to sort the values of the map in descending order
+	private Map<Integer, Integer> sortByFrequency(Map<Integer, Integer> valueMap2) {
+		// TODO Auto-generated method stub
+        List list = new LinkedList(valueMap.entrySet());
+        
+        //comparator to sort on values or frequency of occurrence
+        Collections.sort(list, new Comparator() {
+             public int compare(Object o1, Object o2) {
+	           return ((Comparable) ((Map.Entry) (o2)).getValue())
+	           .compareTo(((Map.Entry) (o1)).getValue());
+             }
+        });
+ 
+        //put the sorted values back into the map 
+        Map sortedMap = new LinkedHashMap();
+        for (Iterator it = list.iterator(); it.hasNext();) {
+        	Map.Entry entry = (Map.Entry)it.next();
+        	sortedMap.put(entry.getKey(), entry.getValue());
+        }
+        return sortedMap;
+	}
+
+	public static void main(String ar[]){
+		int[] array={1,4,2,10,1,11,2,3,3,4,5,5,4,3,3,2,1,6,2,2,4,4,4,2,2,2};
+		ElementFrequencyArray obj= new ElementFrequencyArray();
+		obj.putValue(array);
+		obj.orderValues();
+		obj.showMap();
+	}
+}
+		
+Sample Output:
+Sorted values according to frequency of occurence in descending order are: 
+Number : 2 Frequency : 8
+Number : 4 Frequency : 6
+Number : 3 Frequency : 4
+Number : 1 Frequency : 3
+Number : 5 Frequency : 2
+Number : 6 Frequency : 1
+Number : 10 Frequency : 1
+Number : 11 Frequency : 1	
+
+
