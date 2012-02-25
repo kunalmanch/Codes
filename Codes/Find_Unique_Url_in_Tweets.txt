@@ -1,0 +1,202 @@
+/**************************
+ * Program to find a unique url and add it to a list
+ *
+ */
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+
+public class FindUrl {
+	ArrayList urls;
+	Iterator iterator;
+	public FindUrl(){
+		urls=new ArrayList();
+		iterator=urls.iterator();
+	}
+	//method to find urls in a tweet or string
+	String findUrl(String withUrlAndSpace){
+		int indexStart=withUrlAndSpace.indexOf("http");
+		int indexStop=0;
+		String rString=null;
+		boolean runWhile=true;
+		indexStop=indexStart;
+		//Check if string contains http, i.e., url. If it does not then discard that string 
+		if (indexStart!=-1){
+			while (runWhile){
+				if (indexStop<(withUrlAndSpace.lastIndexOf("")-1)){
+					if ((withUrlAndSpace.charAt(indexStop)!='\n')&&
+					   (withUrlAndSpace.charAt(indexStop)!=' '))
+							indexStop++;
+					else 
+							runWhile=false;
+				}
+				else{
+					runWhile=false;
+					indexStop++;
+				}
+			}
+			rString=withUrlAndSpace.substring(indexStart,indexStop);
+		}
+		else
+			rString=null;
+		return rString;
+	}
+	//Method to check and add unique url to list
+	void checkUniqueUrl(String url){
+		iterator=urls.iterator();
+		String temp=null;
+		int uniqueFlag=0;
+		if (url!=null){
+			for (;iterator.hasNext();){
+				temp=(String) iterator.next();
+				if (temp.equals(url)){
+					uniqueFlag=1;
+					break;
+				}
+			}
+			if (uniqueFlag!=1){
+				urls.add(url);
+			}
+		}
+	}
+	
+	//Method to display unique urls of the list.
+	void printUrls(){
+		System.out.println("Printing the unique url list: ");
+		iterator=urls.iterator();
+		for (;iterator.hasNext();){
+			System.out.println(iterator.next());
+		}
+	}
+}
+
+
+
+/***************
+ * Program to find unique URLS in 100 most recent tweets containing a hastag(search key)
+ **************/
+
+import twitter4j.Query;
+import twitter4j.QueryResult;
+import twitter4j.Tweet;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+
+
+public class URLInTweet {
+	
+	FindUrl obj;
+    Twitter twitter;
+    //Public Constructor to create Twitter and FindUrl instances
+    public URLInTweet(){
+    	twitter= new TwitterFactory().getInstance();
+    	obj=new FindUrl();
+    }
+    //method to get 100 recent tweets that contain the hashtag or search key
+    QueryResult searchTweet(String searchKey){
+	    Query query = new Query(searchKey);
+	    query.setRpp(100);
+	    QueryResult result = null;
+		try {
+			result = twitter.search(query);
+		} catch (TwitterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+    }
+    //method to find unique urls in a tweet and add them to a list. Calls methods from FindUrl class to do so 
+    void findUniqueUrls(QueryResult result){
+	    for (Tweet tweet : result.getTweets()) {
+	    	obj.checkUniqueUrl(obj.findUrl(tweet.getText()));
+	    }
+    }
+    //method to print the unique urls' list. Calls method of FindUrl to do so
+    void printUniqueUrls(){
+	    obj.printUrls();
+	    System.out.println("Total unique urls: "+obj.urls.size());
+    }
+    
+	public static void main(String ar[]){
+		URLInTweet uit=new URLInTweet();
+		uit.findUniqueUrls(uit.searchTweet(ar[0]));
+		uit.printUniqueUrls();
+	}
+}
+
+Sample Output:
+>java TweetDemo #football
+Printing the unique url list: 
+http://t.co/wV0AWemT
+http://t.co/lFJKI5lS
+http://t.co/4SIQQ06P
+http://t.co/vrRf1bTN
+http://t.co/QYvGPMWz
+http://t.co/JSWsXDmm
+http://t.co/mXrvJa7T
+http://t.co/zVb9RJqc
+http://t.co/ZekKriGF
+http://t.co/3M57kVYy
+http://t.co/jZyKSt5U
+http://t.co/LMgXKXHL
+http://t.co/EAWyCZI7
+http://t.co/47E064qv
+http://t.co/rL17p6sH
+http://t.co/vvfT6Iw8
+http://t.co/3LW50jqm
+http://t.co/v2d3gHOL
+http://t.co/FBG0rKyH
+http://t.co/aGwtoUDI
+http://t.co/23gngyJv
+http://t.co/nw5R3y2A
+http://t.co/2m3fatPA
+http://t.co/LYltllB8
+http://t.co/F5qvkbKh
+http://t.co/DS53vfsg
+http://t.co/HDbH95gL
+http://t.co/g5awkhsf
+http://t.co/qDVKv3BJ
+http://t.co/Et4Yg6oI
+http://
+http://t.co/X9hOeMVA
+http://t.co/r8zV0Nj0
+http://t.co/xrffr1pR
+http://t.co/pwsfvbaW
+http://t.co/9iFP7WEZ
+http://t.co/ZF9Slf9D
+http:/...
+http://t.co/EgqBpJQ3
+http://t.co/cZJx7mMA
+http://t.co/q4l797oU
+http://t.co/yFUyUEjF
+http://t.co/q3I18Kod
+http://t.co/dZDmyXyC
+http://t.co/8I9jlVz2
+http://t.co/HopEAoc5
+http://t.co/GWzGwN2D
+http://t.co/PZCqSV2i
+http://t.co/yfbSzTHX
+http://t.co/rZLI4T4a
+http://t.co/zGQUX9oy
+http://t.co/w6YnQuQ3
+http://t.co/T825Lo9n
+http://t.co/TEI758Iy
+http://t.co/8k0W5tam
+http://t.co/jusE31f0
+http://t.co/pId6QCsQ
+http://t.co/N4DIREyU
+http://t.co/YM0sxvLt
+http://t.co/rfBmccUm
+http://t.co/lwSTZaBs
+http://t.co/uiE09jMt
+http://t.co/5fXQO2P3
+http://t.co/C6PYJ7bi
+http://t.co/3H1lh44J
+http://t.co/KCOHX3nb
+Total unique urls: 66
+
+
+ASSUMPTION: I have assumed that urls start with http and have written the code like wise. 
+I have used twitter4j java api for fetching tweets from Twitter.
